@@ -1,14 +1,17 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Typography, Input, Button, Checkbox } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import { signUp } from "../api/signUp";
 
 const { Title, Text } = Typography;
 
 const SignUpPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("test@example.com");
+  const [password, setPassword] = useState("P@ssw0rd");
+  const [confirmPassword, setConfirmPassword] = useState("P@ssw0rd");
   const [agreed, setAgreed] = useState(false);
 
   const handleEmailChange = (e) => {
@@ -27,7 +30,7 @@ const SignUpPage = () => {
     setAgreed(e.target.checked);
   };
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     if (
       !validateEmail(email) ||
       password === "" ||
@@ -37,7 +40,9 @@ const SignUpPage = () => {
       // Handle validation errors or agreement not checked
       return;
     }
-    console.log(email, password, confirmPassword, agreed);
+    const response = await signUp(email, password);
+    console.log("Sign-up successful:", response);
+    navigate("/");
     // Call API for sign-up or further action
   };
 
@@ -105,7 +110,9 @@ const SignUpPage = () => {
       </div>
       <div>
         <span>Have an Account? </span>
-        <Link to="/" style={{ color: 'red' }}>Sign In</Link>
+        <Link to="/" style={{ color: "red" }}>
+          Sign In
+        </Link>
       </div>
     </div>
   );

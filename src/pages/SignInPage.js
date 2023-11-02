@@ -1,13 +1,17 @@
 import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import { Typography, Input, Button } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import { signIn } from '../api/signIn'; 
+
 
 const { Title } = Typography;
 
 const SignInPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("test@example.com");
+  const [password, setPassword] = useState("P@ssw0rd");
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -17,11 +21,20 @@ const SignInPage = () => {
     setPassword(e.target.value);
   };
 
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
     if (!validateEmail(email)) {
       return;
     }
-    console.log(email, password);
+    try {
+      console.log(email, password);
+      const response = await signIn(email, password);
+      // Handle successful sign-in
+      console.log('Sign-in successful:', response);
+      navigate('/booking');
+    } catch (error) {
+      // Handle authentication error or network error
+      console.error('Error occurred:', error);
+    }
   };
 
   const validateEmail = (email) => {
