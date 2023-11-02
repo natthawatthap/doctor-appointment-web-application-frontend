@@ -9,7 +9,7 @@ const { Title, Text } = Typography;
 
 const SignUpPage = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("test@example.com");
+  const [email, setEmail] = useState("example@email.com");
   const [password, setPassword] = useState("P@ssw0rd");
   const [confirmPassword, setConfirmPassword] = useState("P@ssw0rd");
   const [agreed, setAgreed] = useState(false);

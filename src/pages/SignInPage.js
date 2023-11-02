@@ -10,7 +10,7 @@ const { Title } = Typography;
 
 const SignInPage = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("test@example.com");
+  const [email, setEmail] = useState("example@email.com");
   const [password, setPassword] = useState("P@ssw0rd");
 
   const handleEmailChange = (e) => {

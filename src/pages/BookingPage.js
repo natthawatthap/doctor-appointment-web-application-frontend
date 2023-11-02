@@ -1,43 +1,95 @@
-import React from "react";
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import moment from "moment";
+import { useNavigate } from "react-router-dom";
 import { Card, Button } from "antd";
-import { LogoutOutlined } from "@ant-design/icons";
+
+import { LogoutOutlined, EnvironmentOutlined } from "@ant-design/icons";
+
+import { getAppointment } from "../api/getAppointment";
 
 const BookingPage = () => {
   const navigate = useNavigate();
+  const [appointments, setAppointments] = useState([]);
+
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        const appointmentsData = await getAppointment();
+        setAppointments(appointmentsData);
+      } catch (error) {
+        console.error("Error fetching appointments:", error);
+      }
+    };
+
+    fetchAppointments();
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/");
+  };
 
   const handleBookingAppointment = () => {
-    navigate('/booking-appointment');
+    navigate("/booking-appointment");
   };
+
   return (
     <div>
-      <h1>Booking Appointments</h1>
-
-      <Button type="primary" icon={<LogoutOutlined />}>
-        Logout
-      </Button>
-      <h2>Today</h2>
-      <Card
+      <div
         style={{
-          margin: "10px", // Adjust margin as needed
-          backgroundColor: "#f0f0f0",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
-        <p>Dr. Halima Sheppard</p>
-        <p>09:00 AM</p>
-        <p>Cardiologist</p>
-        <p>Map Icon: Davin Clinic</p>
-      </Card>
+        <h1 style={{ flex: 1, textAlign: "center" }}>Booked Appointments</h1>
+        <Button
+          type="primary"
+          icon={<LogoutOutlined />}
+          onClick={handleLogout}
+        ></Button>
+      </div>
 
-      <h2>14 February 2023</h2>
-      <Card>
-        <p>Dr. Halima Sheppard</p>
-        <p>09:00 AM</p>
-        <p>Cardiologist</p>
-        <p>Map Icon: Davin Clinic</p>
-      </Card>
+      {appointments !== null &&
+        appointments.map((appointment) => (
+          <div key={appointment.id}>
+            <h6
+              style={{
+                backgroundColor: "#f0f0f0",
+                textAlign: "center",
+                padding: "10px",
+              }}
+            >
+              {moment(appointment.date).format("D MMMM YYYY")}
+            </h6>
+            <Card
+              style={{
+                margin: "10px",
+                backgroundColor: "#f0f0f0",
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <div>
+                  <p>{appointment.doctorName}</p>
+                  <p>{appointment.specialty}</p>
+                </div>
+                <div>
+                  <p>{moment(appointment.time, "HH:mm").format("hh:mm A")}</p>
+                  <p>
+                    <EnvironmentOutlined /> {appointment.location}
+                  </p>
+                </div>
+              </div>
+            </Card>
+          </div>
+        ))}
 
-      <Button type="primary" onClick={handleBookingAppointment}>
+      <Button
+        type="primary"
+        danger
+        style={{ width: "100%" }}
+        onClick={handleBookingAppointment}
+      >
         + Booking Appointment
       </Button>
     </div>
