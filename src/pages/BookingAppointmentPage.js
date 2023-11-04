@@ -3,19 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { Card, Button, Select, Divider, Row, Col } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import moment from "moment";
+import TimeSelector from "../components/TimeSelector";
+import ScheduleSelector from "../components/ScheduleSelector";
 
 const { Option } = Select;
-const timeSlots = [
-  "08:00 AM",
-  "09:00 AM",
-  "10:00 AM",
-  "11:00 AM",
-  "12:00 PM",
-  "01:00 PM",
-  "02:00 PM",
-  "03:00 PM",
-  "04:00 PM",
-];
 
 const BookingAppointmentPage = () => {
   const navigate = useNavigate();
@@ -24,6 +15,9 @@ const BookingAppointmentPage = () => {
   const currentMonth = moment().format("MMMM"); // Get the current month
 
   const [selectedMonth, setSelectedMonth] = useState(currentMonth);
+  const [selectedTime, setSelectedTime] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [visibleDays, setVisibleDays] = useState(4);
 
   const handleSelectChange = (value) => {
     setSelectedMonth(value);
@@ -33,8 +27,37 @@ const BookingAppointmentPage = () => {
     navigate("/booking");
   };
 
-  const handleButtonClick = () => {
-    console.log("Button clicked");
+  const handleScheduleSelector = (date) => {
+    setSelectedDate(date);
+    console.log(selectedDate);
+  };
+
+  const handleTimeSelector = (time) => {
+    setSelectedTime(time);
+    console.log(selectedTime);
+  };
+
+  const generateDayButtons = () => {
+    const daysInMonth = moment(selectedMonth, "MMMM").daysInMonth();
+    const buttons = [];
+
+    for (let i = 1; i <= daysInMonth; i++) {
+      buttons.push(
+        <Button key={i} type="primary">
+          {moment(`${i}-${selectedMonth}`, "D-MMMM").format("ddd D")}
+        </Button>
+      );
+    }
+
+    return buttons;
+  };
+
+    const handlePrevDays = () => {
+    setVisibleDays(visibleDays - 4);
+  };
+
+  const handleNextDays = () => {
+    setVisibleDays(visibleDays + 4);
   };
 
   return (
@@ -58,7 +81,7 @@ const BookingAppointmentPage = () => {
       </div>
       <div>
         <Select
-          defaultValue="Select"
+          defaultValue={currentMonth}
           style={{ width: 200 }}
           onChange={handleSelectChange}
         >
@@ -71,15 +94,9 @@ const BookingAppointmentPage = () => {
       </div>
 
       <h1>Select Schedule</h1>
-      <Button type="primary">Thu 14</Button>
+      {generateDayButtons()} {/* Render the generated buttons */}
       <Divider />
-      <Row gutter={[16, 16]}>
-        {timeSlots.map((time, index) => (
-          <Col span={8} key={index}>
-            <Button type="primary">{time}</Button>
-          </Col>
-        ))}
-      </Row>
+      <TimeSelector onClick={handleTimeSelector} />
 
       <Divider />
       <Button type="primary" danger style={{ width: "100%" }}>
