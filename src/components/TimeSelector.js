@@ -27,10 +27,10 @@ const TimeSelector = ({ onClick }) => {
       {timeSlots.map((time, index) => (
         <Col span={8} key={index}>
           <Button
-            type={selectedTime === time ? "primary " : "default"}
+          
             onClick={() => handleTimeClick(time)}
            
-            danger
+            danger={time === selectedTime}
           >
             {time}
           </Button>
