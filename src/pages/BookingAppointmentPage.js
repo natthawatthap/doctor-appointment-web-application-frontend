@@ -1,41 +1,40 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, Button, Select, Divider, Row, Col } from "antd";
+import { Button, Divider } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import moment from "moment";
+
 import SpecialtySelector from "../components/SpecialtySelector";
-import ScheduleSelector from "../components/ScheduleSelector";
+import MonthSelector from "../components/MonthSelector";
+
+import DateSelector from "../components/DateSelector";
 import TimeSelector from "../components/TimeSelector";
 
-
 import { getSchedule } from "../api/getSchedule";
-
-const { Option } = Select;
+import createAppointment from "../api/createAppointment";
 
 const BookingAppointmentPage = () => {
   const navigate = useNavigate();
-  const months = moment.months();
 
-  const currentMonth = moment().format("MMMM"); // Get the current month
-
-  const [selectedMonth, setSelectedMonth] = useState(currentMonth);
+  const [selectedSpecialty, setSpecialty] = useState(null);
+  const [schedule, setSchedule] = useState([]);
+  const [selectedMonth, setSelectedMonth] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
 
   const handleSpecialtySelectChange = async (specialty) => {
     try {
-      const scheduleData = await getSchedule(specialty);
-      console.log("Schedule Data:", scheduleData);
+      const schedule = await getSchedule(specialty);
+      setSchedule(schedule);
+      console.log(schedule);
+      setSpecialty(specialty);
     } catch (error) {
       console.error("Error fetching schedule:", error);
     }
   };
 
-  
-  const handleSelectChange = (value) => {
-    setSelectedMonth(value);
+  const handleMonthSelector = (month) => {
+    setSelectedMonth(month);
   };
-
 
   const handleBackToBooking = () => {
     navigate("/booking");
@@ -49,10 +48,18 @@ const BookingAppointmentPage = () => {
     setSelectedTime(time);
   };
 
-  const handleBookNow = () => {
-    console.log("Selected Month:", selectedMonth);
-    console.log("Selected Date:", selectedDate);
-    console.log("Selected Time:", selectedTime);
+  const handleBookNow = async () => {
+    try {
+      const schedule = await createAppointment(
+        selectedSpecialty,
+        selectedMonth,
+        selectedDate,
+        selectedTime
+      );
+      console.log("Appointment created:", schedule);
+    } catch (error) {
+      console.error("Error creating appointment:", error);
+    }
   };
 
   return (
@@ -67,26 +74,20 @@ const BookingAppointmentPage = () => {
         <SpecialtySelector onSelectChange={handleSpecialtySelectChange} />
       </div>
       <div>
-        <Select
-          defaultValue={currentMonth}
-          style={{ width: 200 }}
-          onChange={handleSelectChange}
-        >
-          {months.map((month, index) => (
-            <Option key={index} value={month}>
-              {month}
-            </Option>
-          ))}
-        </Select>
+        <MonthSelector
+          schedule={schedule}
+          onSelectChange={handleMonthSelector}
+        />
       </div>
       <h1>Select Schedule</h1>
-      <ScheduleSelector
+      <DateSelector
         selectedMonth={selectedMonth}
         onDateSelect={handleScheduleSelector}
         selectedDate={selectedDate}
+        schedule={schedule}
       />
       <Divider />
-      <TimeSelector onClick={handleTimeSelector} />
+      <TimeSelector onClick={handleTimeSelector} schedule={schedule} />
       <Divider />
 
       <Button

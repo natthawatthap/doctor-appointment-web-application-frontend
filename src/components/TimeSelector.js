@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Row, Col, Button } from "antd";
-import "./TimeSelector.css"; // Import custom CSS
+import "./TimeSelector.css";
+import moment from "moment";
 
-const TimeSelector = ({ onClick }) => {
+const TimeSelector = ({ onClick, schedule }) => {
   const timeSlots = [
     "08:00 AM",
     "09:00 AM",
@@ -16,10 +17,19 @@ const TimeSelector = ({ onClick }) => {
   ];
 
   const [selectedTime, setSelectedTime] = useState(null);
+  const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
+
+  useEffect(() => {
+    const availableTimes = schedule.map(item => item.times).flat();
+    setAvailableTimeSlots(availableTimes.map(time => moment(time, "HH:mm:ss").format("hh:mm A")));
+    console.log(availableTimes);
+  }, [schedule]);
 
   const handleTimeClick = (time) => {
-    setSelectedTime(time);
-    onClick(time);
+    if (availableTimeSlots.includes(time)) {
+      setSelectedTime(time);
+      onClick(time);
+    }
   };
 
   return (
@@ -27,10 +37,9 @@ const TimeSelector = ({ onClick }) => {
       {timeSlots.map((time, index) => (
         <Col span={8} key={index}>
           <Button
-          
             onClick={() => handleTimeClick(time)}
-           
             danger={time === selectedTime}
+            disabled={!availableTimeSlots.includes(time)}
           >
             {time}
           </Button>
