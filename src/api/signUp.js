@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-const BASE_URL = 'http://localhost:8080'; // Base URL for your API
+import { BASE_URL } from '../config';
 
 export const signUp = async (email, password) => {
     try {
@@ -9,8 +8,8 @@ export const signUp = async (email, password) => {
             password
         });
 
-        return response.data; // Return the response data
+        return response.data; 
     } catch (error) {
-        throw error; // Throw error in case of any issues
+        throw error; 
     }
 };

@@ -1,7 +1,6 @@
 import moment from "moment";
 import axios from "axios";
-
-const BASE_URL = "http://localhost:8080"; // Base URL for your API
+import { BASE_URL } from "../config";
 
 export const createAppointment = async (
   selectedSpecialty,
@@ -10,7 +9,7 @@ export const createAppointment = async (
   selectedTime
 ) => {
   try {
-    const token = localStorage.getItem("token"); // Retrieve the token from local storage
+    const token = localStorage.getItem("token"); 
 
     if (!token) {
       // Handle case when token is not available
@@ -19,15 +18,13 @@ export const createAppointment = async (
 
     const config = {
       headers: {
-        Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+        Authorization: `Bearer ${token}`, 
       },
     };
     const dateNumber = parseInt(selectedDate.split(" ")[1]);
     const formattedMonth = moment(selectedMonth, "MMMM").format("MM");
     const formattedYear = moment(selectedMonth, "MMMM").format("YYYY");
 
-    console.log(dateNumber,formattedMonth,formattedYear);
- 
     const appointmentData = {
       specialty: selectedSpecialty,
       date: `${formattedYear}-${formattedMonth}-${dateNumber}`,

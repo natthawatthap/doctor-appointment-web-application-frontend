@@ -4,7 +4,7 @@ import { Button } from "antd";
 import moment from "moment";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import "./DateSelector.css";
+
 
 const DateSelector = ({ selectedMonth, onDateSelect, selectedDate, schedule }) => {
   const daysInMonth = moment(selectedMonth, "MMMM").daysInMonth();

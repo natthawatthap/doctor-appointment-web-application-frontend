@@ -4,7 +4,7 @@ import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 import BookingPage from "./pages/BookingPage";
 import BookingAppointmentPage from "./pages/BookingAppointmentPage";
-
+import './App.css'
 
 function App() {
   return (

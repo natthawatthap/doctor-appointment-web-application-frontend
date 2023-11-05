@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Row, Col, Button } from "antd";
-import "./TimeSelector.css";
+
 import moment from "moment";
 
 const TimeSelector = ({ onClick, schedule }) => {
@@ -20,8 +20,10 @@ const TimeSelector = ({ onClick, schedule }) => {
   const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
 
   useEffect(() => {
-    const availableTimes = schedule.map(item => item.times).flat();
-    setAvailableTimeSlots(availableTimes.map(time => moment(time, "HH:mm:ss").format("hh:mm A")));
+    const availableTimes = schedule.map((item) => item.times).flat();
+    setAvailableTimeSlots(
+      availableTimes.map((time) => moment(time, "HH:mm:ss").format("hh:mm A"))
+    );
     console.log(availableTimes);
   }, [schedule]);
 
